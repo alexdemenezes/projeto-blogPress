@@ -3,7 +3,8 @@ const PORT = 3000;
 const app = express();
 const bodyParser = require('body-parser');
 const connection = require('./database/connection');
-
+const categoriesController = require('./categories/CategoriesController.js');
+const articlesController
 // View engine
 app.set('view engine', 'ejs');
 
@@ -24,6 +25,13 @@ connection
   .catch(() => {
     console.log('Erro de conexão')
   })
+
+
+// routes
+app.use('/', categoriesController);
+app.use('/', articlesController);
+
+
 
 
 app.get('/', (req, res) => res.render('index'));
