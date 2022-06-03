@@ -28,6 +28,27 @@ router.post('/categories/save', async (req, res) => {
   return res.redirect("/admin/categories/new");
 });
 
+router.post('/categories/delete', async (req, res) => {
+    const { id } = req.body;
+
+    if(id){
+      if (!isNaN(id)) {
+        await Category.destroy({
+          where: {
+            id
+          }
+        })
+        return res.redirect('/admin/categories');
+      } else {
+        return res.redirect('/admin/categories');
+      }
+
+    } else {
+      res.redirect('/admin/categories')
+    }
+});
+
+
 
 
 
