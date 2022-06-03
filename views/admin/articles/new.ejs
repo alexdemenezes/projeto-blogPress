@@ -8,9 +8,9 @@
         <h2>Novo artigo</h2>
       </div>
       <div class="card-body">
-        <form action="/categories/save" method="post">
+        <form action="/articles/save" method="post">
           <input class="form-control" type="text" name="title" placeholder="Defina o título do artigo"><br>
-          <textarea class="form-control" placeholder="escreva o artigo aqui" nome="body" id="article" ></textarea><br>
+          <textarea class="form-control" placeholder="escreva o artigo aqui" name="body" id="article" ></textarea><br>
           <label for="">Categoria</label>
           <select class="form-control" name="category">
             <% categories.forEach((category) => { %>
