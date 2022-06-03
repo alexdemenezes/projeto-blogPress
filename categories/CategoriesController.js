@@ -23,7 +23,7 @@ router.post('/categories/save', async (req, res) => {
         title,
         slug: slugify(title)
     });
-    return res.redirect('/');
+    return res.redirect('/admin/categories');
   }
   return res.redirect("/admin/categories/new");
 });
@@ -46,6 +46,38 @@ router.post('/categories/delete', async (req, res) => {
     } else {
       res.redirect('/admin/categories')
     }
+});
+
+router.get('/admin/categories/edit/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    if(isNaN(id)){
+      return res.redirect('/admin/categories/');
+    }
+
+    const category = await Category.findByPk(id);
+    if(category){
+      res.render('admin/categories/edit', { category });
+    } else {
+      res.redirect('/admin/categories');
+    }
+  } catch (e) {
+    res.redirect('/admin/categories');
+  }
+});
+
+router.post('/categories/update', async (req, res) => {
+  try {
+    const { id, title } = req.body;
+    await Category.update({ title, slug: slugify(title) }, {
+      where: {
+        id
+      }
+    });
+    return res.redirect('/admin/categories');
+  } catch (e) {
+    return res.redirect('/admin/categories');
+  }
 });
 
 
