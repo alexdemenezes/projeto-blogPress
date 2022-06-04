@@ -38,6 +38,55 @@ app.use('/', articlesController);
 
 
 
-app.get('/', (req, res) => res.render('index'));
+app.get('/', async (req, res) => {
+  try {
+    const categories = await Category.findAll();
+    const articles = await Article.findAll({
+      order: [
+        ['id', 'DESC']
+      ],
+      include: [ { model: Category } ]
+    });
+    return res.render('index', { articles, categories });
+
+  } catch (e) {
+    return res.redirect('/');
+  }
+});
+
+app.get('/:slug', async (req, res) => {
+  try {
+    const { slug } = req.params;
+    const categories = await Category.findAll();
+    const article = await Article.findOne({
+      where: {
+        slug,
+      }
+    });
+  if(article) {
+    return res.render('article', { article, categories });
+  } else {
+    return res.redirect('/');
+  }
+  } catch (e) {
+    return res.redirect('/');
+  }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 app.listen(PORT, () => console.log(`Rodando na porta: ${PORT}`));
