@@ -4,8 +4,11 @@ const Category = require('../categories/Category');
 const Article = require('./Article');
 const slugify = require('slugify');
 
-router.get('/admin/articles', (req, res) => {
-  res.send('rota de artigos');
+router.get('/admin/articles', async (req, res) => {
+    const articles = await Article.findAll({
+      include: [{ model: Category }]
+    });
+    return res.render('admin/articles/index', { articles });
 });
 
 router.get('/admin/articles/new', async (req, res) => {
@@ -30,6 +33,22 @@ router.post('/articles/save', async (req, res) => {
   } catch (e) {
     return res.redirect('/admin/articles')
   }
+});
+
+router.post('/articles/delete', async (req, res) => {
+  const { id } = req.body;
+  if (id) {
+    if(!isNaN(id)) {
+      await Article.destroy({
+        where: {
+          id,
+        }
+      })
+      return res.redirect('/admin/articles');
+    }
+    return res.redirect('/admin/articles');
+  }
+  return res.redirect('/admin/articles');
 });
 
 
