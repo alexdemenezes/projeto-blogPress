@@ -51,6 +51,34 @@ router.post('/articles/delete', async (req, res) => {
   return res.redirect('/admin/articles');
 });
 
+router.get('/admin/articles/edit/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const article = await Article.findByPk(id);
+    const categories = await Category.findAll();
+    if (article) {
+      return res.render('admin/articles/edit', { categories, article });
+    }
+    return res.redirect('/');
+  } catch (e) {
+    return res.redirect('/');
+  }
+});
+
+router.post('/articles/update', async (req, res) => {
+  try {
+    const { id, title, body, category: categoryId } = req.body;
+    await Article.update({ title, body, categoryId, slug: slugify(title) }, {
+      where: {
+        id
+      }
+    });
+    return res.redirect('/admin/articles')
+  } catch (e) {
+    return res.redirect('/');
+  }
+});
+
 
 
 
