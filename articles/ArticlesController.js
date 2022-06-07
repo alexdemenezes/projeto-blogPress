@@ -93,17 +93,21 @@ router.get('/articles/page/:num', async (req, res) => {
 
     const articles = await Article.findAndCountAll({
       limit: 2,
-      offset
+      offset,
+      order: [
+        ['id', 'DESC']
+      ],
     });
 
     const categories = await Category.findAll();
 
-    if(offset + 4 >= articles.count) {
+    if(offset + 2 >= articles.count) {
       next = false
     } else {
       next = true;
     }
     const result = {
+      page: +page,
       next,
       articles,
     }
