@@ -45,6 +45,7 @@ app.get('/', async (req, res) => {
       order: [
         ['id', 'DESC']
       ],
+      limit: 4, 
       include: [ { model: Category } ]
     });
     return res.render('index', { articles, categories });
