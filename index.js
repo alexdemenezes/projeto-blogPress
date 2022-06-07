@@ -73,6 +73,28 @@ app.get('/:slug', async (req, res) => {
   }
 });
 
+app.get('/category/:slug', async (req, res) => {
+  try {
+    const { slug } = req.params;
+    const categories = await Category.findAll();
+    const category = await Category.findOne({
+      where: {
+        slug,
+      },
+      include: [{ model: Article }]
+    });
+
+    if(category) {
+      return res.render('index', {categories, articles: category.articles})
+    }
+    return res.redirect('/');
+
+  } catch (e) {
+    return res.redirect('/');
+  }
+});
+
+
 
 
 
