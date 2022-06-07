@@ -80,25 +80,37 @@ router.post('/articles/update', async (req, res) => {
 });
 
 router.get('/articles/page/:num', async (req, res) => {
-  const { num: page } = req.params;
-  let offset;
-  let next;
+  try {
+    const { num: page } = req.params;
+    let offset;
+    let next;
 
-  if (isNaN(page) || +page === 1) {
-    offset = 0
-  } else {
-    const offset = +page * 4;
-  }
+    if (isNaN(page) || +page == 1) {
+      offset = 0
+    } else {
+       offset = (+page - 1) * 2;
+    }
 
-  const articles = await Article.findAndCountAll({
-    limit: 3,
-    offset
-  });
+    const articles = await Article.findAndCountAll({
+      limit: 2,
+      offset
+    });
 
-  if(offset + 4 >= articles.count) {
-    next = false
-  } else {
-    next = true;
+    const categories = await Category.findAll();
+
+    if(offset + 4 >= articles.count) {
+      next = false
+    } else {
+      next = true;
+    }
+    const result = {
+      next,
+      articles,
+    }
+
+    return res.render('admin/articles/page', {result, categories })
+  } catch (e) {
+    return res.render('/')
   }
 
 });
