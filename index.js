@@ -1,16 +1,30 @@
 const express = require('express');
+const session = require('express-session');
 const PORT = 3000;
 const app = express();
 const bodyParser = require('body-parser');
 const connection = require('./database/connection');
 const categoriesController = require('./categories/CategoriesController.js');
 const articlesController = require('./articles/ArticlesController');
+const usersController = require('./users/UsersController');
 const Article = require('./articles/Article');
 const Category = require('./categories/Category');
+const User = require('./users/UsersController');
 
 
 // View engine
 app.set('view engine', 'ejs');
+
+// 1s - 1000 ms
+// 60s - 60000 ms
+
+// Sessions
+
+// Redis - banco de dados focado em salvamentos de sessoes e cache
+
+app.use(session({
+  secret: 'jsgdhhksagdsah', cookie: { maxAge:  60000 }
+}));
 
 // static
 app.use(express.static('public'));
@@ -34,6 +48,7 @@ connection
 // routes
 app.use('/', categoriesController);
 app.use('/', articlesController);
+app.use('/', usersController);
 
 
 
@@ -94,6 +109,7 @@ app.get('/category/:slug', async (req, res) => {
     return res.redirect('/');
   }
 });
+
 
 
 
