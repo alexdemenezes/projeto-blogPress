@@ -3,15 +3,17 @@ const router = express.Router();
 const Category = require('../categories/Category');
 const Article = require('./Article');
 const slugify = require('slugify');
+const adminAuth = require('../middlewares/adminAuth');
 
-router.get('/admin/articles', async (req, res) => {
+
+router.get('/admin/articles', adminAuth,  async (req, res) => {
     const articles = await Article.findAll({
       include: [{ model: Category }]
     });
     return res.render('admin/articles/index', { articles });
 });
 
-router.get('/admin/articles/new', async (req, res) => {
+router.get('/admin/articles/new', adminAuth, async (req, res) => {
   try {
     const categories = await Category.findAll();
     return res.render('admin/articles/new', { categories });
@@ -20,7 +22,7 @@ router.get('/admin/articles/new', async (req, res) => {
   }
 });
 
-router.post('/articles/save', async (req, res) => {
+router.post('/articles/save', adminAuth, async (req, res) => {
   try {
     const { title, body, category } = req.body;
     await Article.create({
@@ -35,7 +37,7 @@ router.post('/articles/save', async (req, res) => {
   }
 });
 
-router.post('/articles/delete', async (req, res) => {
+router.post('/articles/delete', adminAuth, async (req, res) => {
   const { id } = req.body;
   if (id) {
     if(!isNaN(id)) {
@@ -51,7 +53,7 @@ router.post('/articles/delete', async (req, res) => {
   return res.redirect('/admin/articles');
 });
 
-router.get('/admin/articles/edit/:id', async (req, res) => {
+router.get('/admin/articles/edit/:id', adminAuth, async (req, res) => {
   try {
     const { id } = req.params;
     const article = await Article.findByPk(id);
@@ -65,7 +67,7 @@ router.get('/admin/articles/edit/:id', async (req, res) => {
   }
 });
 
-router.post('/articles/update', async (req, res) => {
+router.post('/articles/update', adminAuth, async (req, res) => {
   try {
     const { id, title, body, category: categoryId } = req.body;
     await Article.update({ title, body, categoryId, slug: slugify(title) }, {
